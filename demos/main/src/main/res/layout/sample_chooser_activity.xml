@@ -18,6 +18,40 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+  <EditText
+      android:id="@+id/url"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginBottom="10dp"
+      android:layout_marginTop="5dp"
+      android:ems="10"
+      android:inputType="textPersonName"
+      android:text="http://" />
+
+  <LinearLayout
+      android:orientation="horizontal"
+      android:paddingLeft="4.0dip"
+      android:paddingRight="4.0dip"
+      android:paddingBottom="3.0dip"
+      android:layout_width="fill_parent" android:layout_height="wrap_content"
+      android:layout_below="@+id/TextView01">
+
+    <Button
+        android:id="@+id/play_dash"
+        android:layout_width="0.0dip"
+        android:layout_height="fill_parent"
+        android:layout_weight="1.0"
+        android:text="Play DASH" />
+
+    <Button
+        android:id="@+id/play_hls"
+        android:layout_width="0.0dip"
+        android:layout_height="fill_parent"
+        android:layout_weight="1.0"
+        android:text="Play HLS" />
+
+  </LinearLayout>
+
   <ExpandableListView android:id="@+id/sample_list"
       android:layout_width="match_parent"
       android:layout_height="match_parent"/>

@@ -75,12 +75,16 @@ import java.util.List;
   static {
     // App samples.
     ArrayList<Sample> samples = new ArrayList<>();
-    samples.add(new Sample("https://storage.googleapis.com/wvmedia/clear/h264/tears/tears.mpd",
-        "DASH (clear,MP4,H264)", MIME_TYPE_DASH));
-    samples.add(new Sample("https://commondatastorage.googleapis.com/gtv-videos-bucket/CastVideos/"
-        + "hls/TearsOfSteel.m3u8", "Tears of Steel (HLS)", MIME_TYPE_HLS));
-    samples.add(new Sample("https://html5demos.com/assets/dizzy.mp4", "Dizzy (MP4)",
-        MIME_TYPE_VIDEO_MP4));
+//    samples.add(new Sample("http://10.0.32.196:1935/live/thunderstorm-test.stream_360p/playlist.m3u8",
+//        "Wowza 360 p private ip", MIME_TYPE_HLS));
+//    samples.add(new Sample("http://182.156.94.234:11935/live/thunderstorm-test.stream_360p/playlist.m3u8", "Wowza 360 p public ipWowza 360 p public ip", MIME_TYPE_HLS));
+//    samples.add(new Sample("http://tokenauth-i.akamaihd.net/hls/live/264214/tstorm_all/playlist.m3u8", "Akamai HLS push ip(360p)",
+//        MIME_TYPE_HLS));
+//    samples.add(new Sample("http://ec2-13-250-152-106.ap-southeast-1.compute.amazonaws.com/amagi_hls_data_f175cb1-sunnxt-ktv/CDN/playlist.m3u8", "KTV",
+//            MIME_TYPE_HLS));
+//    samples.add(new Sample("https://demo-thunderstorm.amagi.com/amagi_hls_data_c6009f0-xumo/CDN/master.m3u8", "XUMO",
+//                MIME_TYPE_HLS));
+    samples.add(new Sample("http://182.156.94.234:11935/live/thunderstorm-test.stream_360p/playlist.m3u8", "Demo", MIME_TYPE_HLS));
 
 
     SAMPLES = Collections.unmodifiableList(samples);
