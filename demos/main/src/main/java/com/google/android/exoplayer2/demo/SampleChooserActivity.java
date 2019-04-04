@@ -31,6 +31,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
+import android.widget.Button;
 import android.widget.ExpandableListView;
 import android.widget.ExpandableListView.OnChildClickListener;
 import android.widget.ImageButton;
@@ -53,7 +54,9 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-/** An activity for selecting from a list of media samples. */
+/**
+ * An activity for selecting from a list of media samples.
+ */
 public class SampleChooserActivity extends Activity
     implements DownloadTracker.Listener, OnChildClickListener {
 
@@ -69,49 +72,25 @@ public class SampleChooserActivity extends Activity
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.sample_chooser_activity);
-    sampleAdapter = new SampleAdapter();
-    ExpandableListView sampleListView = findViewById(R.id.sample_list);
-    sampleListView.setAdapter(sampleAdapter);
-    sampleListView.setOnChildClickListener(this);
 
-    Intent intent = getIntent();
-    String dataUri = intent.getDataString();
-    String[] uris;
-    if (dataUri != null) {
-      uris = new String[] {dataUri};
-    } else {
-      ArrayList<String> uriList = new ArrayList<>();
-      AssetManager assetManager = getAssets();
-      try {
-        for (String asset : assetManager.list("")) {
-          if (asset.endsWith(".exolist.json")) {
-            uriList.add("asset:///" + asset);
-          }
-        }
-      } catch (IOException e) {
-        Toast.makeText(getApplicationContext(), R.string.sample_list_load_error, Toast.LENGTH_LONG)
-            .show();
+    Button playAsDashBtn = findViewById(R.id.play_url);
+    playAsDashBtn.setOnClickListener(view -> {
+      TextView inputUrlView = findViewById(R.id.input_url);
+      String inputUrl = inputUrlView.getText().toString();
+      String extension = "mpd";
+      if (!inputUrl.contains(".mpd")) {
+        extension = "m3u8";
       }
-      uris = new String[uriList.size()];
-      uriList.toArray(uris);
-      Arrays.sort(uris);
-    }
-
-    DemoApplication application = (DemoApplication) getApplication();
-    useExtensionRenderers = application.useExtensionRenderers();
-    downloadTracker = application.getDownloadTracker();
-    SampleListLoader loaderTask = new SampleListLoader();
-    loaderTask.execute(uris);
-
-    // Start the download service if it should be running but it's not currently.
-    // Starting the service in the foreground causes notification flicker if there is no scheduled
-    // action. Starting it in the background throws an exception if the app is in the background too
-    // (e.g. if device screen is locked).
-    try {
-      DownloadService.start(this, DemoDownloadService.class);
-    } catch (IllegalStateException e) {
-      DownloadService.startForeground(this, DemoDownloadService.class);
-    }
+      Uri inputUri = Uri.parse(inputUrl);
+      UriSample uriSample = new UriSample("dash stream", null, inputUri, extension, null, null);
+      startActivity(
+          uriSample.buildIntent(
+              /* context= */ this,
+              isNonNullAndChecked(preferExtensionDecodersMenuItem),
+              isNonNullAndChecked(randomAbrMenuItem)
+                  ? PlayerActivity.ABR_ALGORITHM_RANDOM
+                  : PlayerActivity.ABR_ALGORITHM_DEFAULT));
+    });
   }
 
   @Override
@@ -128,19 +107,6 @@ public class SampleChooserActivity extends Activity
   public boolean onOptionsItemSelected(MenuItem item) {
     item.setChecked(!item.isChecked());
     return true;
-  }
-
-  @Override
-  public void onStart() {
-    super.onStart();
-    downloadTracker.addListener(this);
-    sampleAdapter.notifyDataSetChanged();
-  }
-
-  @Override
-  public void onStop() {
-    downloadTracker.removeListener(this);
-    super.onStop();
   }
 
   @Override
@@ -491,6 +457,7 @@ public class SampleChooserActivity extends Activity
   }
 
   private static final class DrmInfo {
+
     public final String drmScheme;
     public final String drmLicenseUrl;
     public final String[] drmKeyRequestProperties;
@@ -517,6 +484,7 @@ public class SampleChooserActivity extends Activity
   }
 
   private abstract static class Sample {
+
     public final String name;
     public final DrmInfo drmInfo;
 

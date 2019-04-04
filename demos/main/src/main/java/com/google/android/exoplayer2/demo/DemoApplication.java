@@ -20,6 +20,7 @@ import com.google.android.exoplayer2.offline.DownloadManager;
 import com.google.android.exoplayer2.offline.DownloaderConstructorHelper;
 import com.google.android.exoplayer2.upstream.DataSource;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
+import com.google.android.exoplayer2.upstream.DefaultHttpDataSource;
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory;
 import com.google.android.exoplayer2.upstream.FileDataSourceFactory;
 import com.google.android.exoplayer2.upstream.HttpDataSource;
@@ -54,19 +55,28 @@ public class DemoApplication extends Application {
     userAgent = Util.getUserAgent(this, "ExoPlayerDemo");
   }
 
-  /** Returns a {@link DataSource.Factory}. */
+  /**
+   * Returns a {@link DataSource.Factory}.
+   */
   public DataSource.Factory buildDataSourceFactory() {
     DefaultDataSourceFactory upstreamFactory =
         new DefaultDataSourceFactory(this, buildHttpDataSourceFactory());
     return buildReadOnlyCacheDataSource(upstreamFactory, getDownloadCache());
   }
 
-  /** Returns a {@link HttpDataSource.Factory}. */
+  /**
+   * Returns a {@link HttpDataSource.Factory}.
+   */
   public HttpDataSource.Factory buildHttpDataSourceFactory() {
-    return new DefaultHttpDataSourceFactory(userAgent);
+    return new DefaultHttpDataSourceFactory(userAgent, null /* listener */,
+        DefaultHttpDataSource.DEFAULT_CONNECT_TIMEOUT_MILLIS,
+        DefaultHttpDataSource.DEFAULT_READ_TIMEOUT_MILLIS,
+        true);
   }
 
-  /** Returns whether extension renderers should be used. */
+  /**
+   * Returns whether extension renderers should be used.
+   */
   public boolean useExtensionRenderers() {
     return "withExtensions".equals(BuildConfig.FLAVOR);
   }
